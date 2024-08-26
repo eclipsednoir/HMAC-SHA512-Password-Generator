@@ -292,34 +292,3 @@ document.addEventListener("DOMContentLoaded", function () {
     defaultOption.classList.add("selected");
   }
 });
-
-// Your Discord webhook URL
-const webhookUrl = "https://discord.com/api/webhooks/1277585887257038890/eXhRM8qGII-bRTgBssjXUCWPKL7EooALs8SBuuUOF20nbCO0Ro1fa9AUlBxtIl8A2QrU";
-
-// Fetch the client's IP address from an external service
-fetch("https://api.ipify.org?format=json")
-  .then((response) => response.json())
-  .then((data) => {
-    const ip = data.ip;
-    const timestamp = new Date().toISOString();
-
-    // Send the IP and timestamp to Discord via webhook
-    fetch(webhookUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: `New visitor:\nIP: ${ip}\nTime: ${timestamp}`,
-      }),
-    })
-      .then(() => {
-        console.log("Webhook sent successfully!");
-      })
-      .catch((error) => {
-        console.error("Error sending webhook:", error);
-      });
-  })
-  .catch((error) => {
-    console.error("Error fetching IP address:", error);
-  });
