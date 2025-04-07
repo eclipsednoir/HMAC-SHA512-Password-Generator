@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Get references to DOM elements
   const generateBtn = document.getElementById("generateBtn");
   const copyBtn = document.getElementById("copyBtn");
   const mainInput = document.getElementById("mainInput");
@@ -16,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeInstructionsModalBtn = instructionsModal.querySelector(".close");
   let selectedTruncateLength = 24; // Default truncate length
 
-  // Create and insert error messages for main input and secret key
   const mainInputError = document.createElement("div");
   mainInputError.className = "error-message";
   mainInputError.textContent = "Please enter a Password Base.";
@@ -27,18 +25,15 @@ document.addEventListener("DOMContentLoaded", function () {
   secretKeyError.textContent = "Please enter a Secret Key.";
   secretKey.parentNode.insertBefore(secretKeyError, secretKey.nextSibling);
 
-  // Function to generate password
   function generatePassword() {
     const inputText = mainInput.value;
     const key = secretKey.value;
 
     let valid = true;
 
-    // Hide error messages initially
     mainInputError.style.display = "none";
     secretKeyError.style.display = "none";
 
-    // Validate input and key
     if (!inputText) {
       mainInputError.style.display = "block";
       valid = false;
@@ -49,25 +44,20 @@ document.addEventListener("DOMContentLoaded", function () {
       valid = false;
     }
 
-    // If not valid, return early
     if (!valid) return;
 
-    // Generate HMAC SHA512 hash and convert to Base64
     const hmac = CryptoJS.HmacSHA512(inputText, key);
     const base64 = CryptoJS.enc.Base64.stringify(hmac);
 
     let finalOutput = base64;
 
-    // If truncation is enabled, truncate the Base64 output
     if (truncateCheckbox.checked) {
       finalOutput = truncateBase64(base64, selectedTruncateLength);
     }
 
-    // Display the final output
     output.value = finalOutput;
   }
 
-  // Function to split Base64 string into 4-character segments
   function splitBase64(base64) {
     const segments = [];
     for (let i = 0; i < 22; i++) {
@@ -76,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return segments;
   }
 
-  // Function to calculate entropy of a segment
   function getCharType(char) {
     if (/[a-z]/.test(char)) return 1;
     if (/[A-Z]/.test(char)) return 2;
@@ -98,7 +87,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return entropyScore;
   }
 
-  // Function to truncate Base64 string
   function truncateBase64(base64, length) {
     const segmentLength = 4;
     const base64Length = 88;
@@ -106,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const requiredSegments = length / segmentLength;
 
     const segments = splitBase64(base64);
-    const overallCharCount = [0, 0, 0, 0]; // Counts for lowercase, uppercase, numbers, special
+    const overallCharCount = [0, 0, 0, 0];
     base64
       .split("")
       .forEach((char) => overallCharCount[getCharType(char) - 1]++);
@@ -115,7 +103,6 @@ document.addEventListener("DOMContentLoaded", function () {
       calculateSegmentEntropy(segment, overallCharCount)
     );
 
-    // Initial segments
     let truncatedOutput = [segments[0]];
     const endSegment = segments[segments.length - 1];
 
@@ -140,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return truncatedOutput.substring(0, length);
   }
 
-  // Function to ensure character diversity in the output
   function ensureCharacterDiversity(output, overallCharCount) {
     const containsLower = /[a-z]/.test(output);
     const containsUpper = /[A-Z]/.test(output);
@@ -151,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return output;
     }
 
-    const charCounts = [0, 0, 0, 0]; // Counts for lowercase, uppercase, numbers, special
+    const charCounts = [0, 0, 0, 0];
     output.split("").forEach((char) => charCounts[getCharType(char) - 1]++);
 
     const missingTypes = [
@@ -168,7 +154,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .split("")
         .findIndex((char) => getCharType(char) === mostCommonType);
 
-      // Ensure replacement index changes if mostCommonCharIndex remains same
       let attempts = 0;
       while (
         missingTypes.length > 1 &&
@@ -184,7 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
         output.substring(0, mostCommonCharIndex) +
         replacementChar +
         output.substring(mostCommonCharIndex + 1);
-      // Update charCounts after replacement
       charCounts[getCharType(output[mostCommonCharIndex]) - 1]--;
       charCounts[type - 1]++;
     });
@@ -192,7 +176,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return output;
   }
 
-  // Event listeners for button clicks and input changes
   generateBtn.addEventListener("click", generatePassword);
 
   copyBtn.addEventListener("click", function () {
@@ -201,7 +184,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   truncateCheckbox.addEventListener("change", function () {
-    // Toggle display of selected length and regenerate password if inputs are valid
     if (truncateCheckbox.checked) {
       selectedLengthDisplay.style.display = "inline-block";
     } else {
@@ -213,20 +195,17 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   mainInput.addEventListener("input", function () {
-    // Hide error message when input is provided
     if (mainInput.value) {
       mainInputError.style.display = "none";
     }
   });
 
   secretKey.addEventListener("input", function () {
-    // Hide error message when input is provided
     if (secretKey.value) {
       secretKeyError.style.display = "none";
     }
   });
 
-  // Event listeners for modal interactions
   openModalBtn.addEventListener("click", function () {
     truncateModal.showModal();
   });
@@ -243,7 +222,6 @@ document.addEventListener("DOMContentLoaded", function () {
     instructionsModal.close();
   });
 
-  // Event listener for selecting truncate length options
   truncateOptions.forEach((option) => {
     option.addEventListener("click", function () {
       selectedTruncateLength = parseInt(option.getAttribute("data-length"));
@@ -259,7 +237,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Close modals when clicking outside of them
   truncateModal.addEventListener("click", function (event) {
     const rect = truncateModal.getBoundingClientRect();
     if (
@@ -284,7 +261,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Set default option as selected
   const defaultOption = document.querySelector(
     '.truncate-option[data-length="24"]'
   );
