@@ -1,17 +1,14 @@
-// js/particles-init.js
-
 function calculateSpeed(length) {
   const baseSpeed = 2;
   const maxSpeed = 6;
-  const a = 1 / Math.log2(5); // Adjusted growth rate
-  const growthRate = a * Math.log2(length + 1); // Logarithmic growth with adjusted rate
+  const a = 1 / Math.log2(5);
+  const growthRate = a * Math.log2(length + 1);
   return Math.min(baseSpeed + growthRate, maxSpeed);
 }
 
 function updateParticleSpeed(speed) {
   if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
     window.pJSDom[0].pJS.particles.move.speed = speed;
-    // No need to refresh particles, just update the speed
   }
 }
 
@@ -134,9 +131,7 @@ const particlesConfig = {
   retina_detect: true,
 };
 
-// Initialize particles
 particlesJS("particles-js", particlesConfig);
 
-// Update speed based on input lengths
 document.getElementById("mainInput").addEventListener("input", updateSpeed);
 document.getElementById("secretKey").addEventListener("input", updateSpeed);
