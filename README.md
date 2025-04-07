@@ -42,4 +42,12 @@ The same input combo will always generate the same password — so you never nee
 
 ## License
 
-MIT — use, fork, and share freely.
+This project is licensed under the MIT License.  
+It includes embedded code from the following libraries, also under MIT:
+
+- [CryptoJS](https://github.com/brix/crypto-js)  
+  © 2009–2013 Jeff Mott, © 2013–2016 Evan Vosberg
+- [particles.js](https://github.com/VincentGarreau/particles.js)  
+  © 2015 Vincent Garreau
+
+See the `crypto-js/` and `particles.js/` directories for their respective LICENSE files.
