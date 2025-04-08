@@ -180,10 +180,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
   generateBtn.addEventListener("click", generatePassword);
 
-  copyBtn.addEventListener("click", function () {
-    output.select();
-    document.execCommand("copy");
-  });
+copyBtn.addEventListener("click", function () {
+  const text = output.value;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(function (err) {
+      console.error("Clipboard API failed:", err);
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+});
+
+function fallbackCopy(text) {
+  output.select();
+  try {
+    const successful = document.execCommand("copy");
+    if (!successful) {
+      console.warn("Fallback copy failed.");
+    }
+  } catch (err) {
+    console.error("Fallback copy error:", err);
+  }
+}
+
 
   truncateCheckbox.addEventListener("change", function () {
     if (truncateCheckbox.checked) {
