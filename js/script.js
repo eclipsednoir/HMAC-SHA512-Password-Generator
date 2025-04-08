@@ -109,9 +109,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let additionalSegments = segments
       .slice(1, -1)
       .map((segment, index) => ({ segment, index: index + 1 }));
-    additionalSegments.sort(
-      (a, b) => segmentEntropies[b.index] - segmentEntropies[a.index]
-    );
+    additionalSegments.sort((a, b) => {
+      const diff = segmentEntropies[b.index] - segmentEntropies[a.index];
+      return diff !== 0 ? diff : a.index - b.index;
+    });
+
 
     for (let i = 0; i < requiredSegments - 2; i++) {
       truncatedOutput.push(additionalSegments[i].segment);
