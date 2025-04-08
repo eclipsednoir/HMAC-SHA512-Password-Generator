@@ -88,19 +88,17 @@ For each 4-character segment:
 Given a target output length `L` (where `L` is a multiple of 4):
 
 - **Number of Segments Needed:**  
-  \[
-  \text{Segments Required} = \frac{L}{4}
-  \]
+  The number of required segments is calculated by dividing L by 4 (i.e., Segments Required = L / 4).
 
 - **Fixed Inclusions:**
   - The **first segment** is always included.
   - The **last segment** is always included.
 
 - **Selection Process:**
-  - Among the remaining segments, select those with the highest entropy scores until the total number of segments equals \(\frac{L}{4}\).
+  - Among the remaining segments, select those with the highest entropy scores until the total number of segments equals L / 4.
 
 **Example:**  
-For a target length of 24 characters, 6 segments are required:
+For a target length of 24 characters, 6 segments are required:  
 - 1st segment: Included by default  
 - Last segment: Included by default  
 - Select the top 4 scoring segments from the intermediate segments.
@@ -166,7 +164,7 @@ This guarantees compliance with standard password complexity rules.
 - **Modal Dialogs:**  
   A modal interface allows selection of the desired truncation length with visual feedback.
 - **Copy Functionality:**  
-  A copy-to-clipboard function, implemented via `document.execCommand`, facilitates easy transfer of the final password.
+  A copy-to-clipboard function is provided using the deprecated `document.execCommand` method to ensure compatibility with older systems, despite its deprecation in modern contexts.
 
 ---
 
