@@ -50,4 +50,4 @@ It includes embedded code from the following libraries, also under MIT:
 - [particles.js](https://github.com/VincentGarreau/particles.js)  
   © 2015 Vincent Garreau
 
-See the `crypto-js/` and `particles.js/` directories for their respective LICENSE files.
+See the `js/crypto-js/` and `js/particles.js/` directories for their respective LICENSE files.
