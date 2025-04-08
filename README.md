@@ -1,7 +1,7 @@
 # HMAC-SHA512 Password Generator
+[![DOI](https://zenodo.org/badge/847687256.svg)](https://doi.org/10.5281/zenodo.15176953)
 
 A secure, offline-ready password generator that never stores anything and works anywhere — even without internet.
-[![DOI](https://zenodo.org/badge/847687256.svg)](https://doi.org/10.5281/zenodo.15176953)
 
 ## Why Use This?
 
