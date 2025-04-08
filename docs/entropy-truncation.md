@@ -165,7 +165,7 @@ This guarantees compliance with standard password complexity rules.
 - **Modal Dialogs:**  
   A modal interface allows selection of the desired truncation length with visual feedback.
 - **Copy Functionality:**  
-  A copy-to-clipboard function is implemented using the modern Clipboard API (`navigator.clipboard.writeText`) for compatibility with all modern browsers.
+  A copy-to-clipboard function is implemented using the modern Clipboard API (`navigator.clipboard.writeText`) for compatibility with all modern browsers.  
   For legacy environments that do not support the Clipboard API, a fallback is provided using the deprecated `document.execCommand("copy")`, ensuring backward compatibility with older systems.
 
 ---
