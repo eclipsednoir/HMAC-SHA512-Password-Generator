@@ -96,6 +96,7 @@ Given a target output length `L` (where `L` is a multiple of 4):
 
 - **Selection Process:**
   - Among the remaining segments, select those with the highest entropy scores until the total number of segments equals L / 4.
+  - If multiple segments have identical entropy scores, ties are resolved by favoring the segment that appears earlier in the Base64 sequence, ensuring deterministic selection.
 
 **Example:**  
 For a target length of 24 characters, 6 segments are required:  
@@ -176,7 +177,7 @@ This document is issued as a **defensive publication** to establish prior art fo
 - **Diversity Enforcement Mechanism:**  
   The controlled substitution ensuring that the final password contains at least one lowercase letter, one uppercase letter, one digit, and one special character.
 - **Deterministic Password Generation:**  
-  The overall approach that yields reproducible, high-entropy passwords from the same set of inputs.
+  The overall approach that yields reproducible, high-entropy passwords from the same set of inputs, including deterministic tie resolution for entropy-scored segment selection.
 
 The disclosed technique is released under the MIT License, making it freely available to the software community and precluding the issuance of any future patents on these methods.
 
