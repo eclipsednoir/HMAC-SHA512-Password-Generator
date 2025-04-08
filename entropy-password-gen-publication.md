@@ -1,124 +1,189 @@
-# **Entropy-Based Truncation and Diversity-Ensured Password Generation Using HMAC-SHA512 and Base64 Encoding**
+# Entropy-Based Truncation and Diversity-Ensured Password Generation Using HMAC-SHA512 and Base64 Encoding
 
-### Author: EclipsedNoir  
+**Author:** EclipsedNoir  
 **Date of Original Publication:** April 8th, 2025  
-**Repository:** https://github.com/eclipsednoir/HMAC-SHA512-Password-Generator
+**Repository:** [https://github.com/eclipsednoir/HMAC-SHA512-Password-Generator](https://github.com/eclipsednoir/HMAC-SHA512-Password-Generator)  
 **License:** MIT  
-**Type of Document:** Defensive Publication / Technical Disclosure  
+**Type of Document:** Defensive Publication / Technical Disclosure
 
 ---
 
-## **Abstract**
+## Abstract
 
-This document describes a method for generating deterministic, high-entropy passwords by combining HMAC-SHA512 hashing with Base64 encoding. To produce fixed-length outputs while preserving complexity, the hash is segmented and each segment is scored using an entropy-based heuristic that evaluates character class diversity and rarity. The highest-ranking segments are selected for inclusion, and the final output is modified as needed to ensure it includes characters from at least four distinct categories: lowercase letters, uppercase letters, digits, and special characters. The entire process is deterministic and reproducible from the same inputs.
+This document discloses a method for generating deterministic, high-entropy passwords by combining HMAC-SHA512 hashing with Base64 encoding. The process leverages a novel truncation algorithm that partitions the Base64 output into fixed segments, scores each segment using an entropy-based heuristic (which evaluates character class diversity and rarity), and selects high-scoring segments for the final truncated output. An additional diversity-enforcement step ensures that the resulting password incorporates characters from four distinct classes: lowercase letters, uppercase letters, digits, and special characters. The entire procedure is deterministic and reproducible when provided with identical inputs.
 
 ---
 
-## **System Overview**
+## System Overview
 
-### **Inputs:**
+### Inputs
 - **Password Base:** A user-provided text string.
-- **Secret Key:** A second string used as the key in HMAC.
-- **Optional Truncation Toggle:** Boolean input determining if the output should be reduced to a specified length.
-- **Truncation Length Selector:** Modal UI control allowing the user to pick output lengths (e.g., 16, 24, 32 chars).
+- **Secret Key:** A text string used as the key for the HMAC.
+- **Truncation Toggle:** A Boolean flag that enables or disables the truncation of the Base64-encoded string.
+- **Truncation Length Selector:** A UI control that allows selection of the desired final output length (e.g., 16, 24, or 32 characters).
 
-### **Process Flow:**
-1. The HMAC-SHA512 hash is computed from the password base and secret key.
-2. The result is Base64-encoded into an 88-character string.
-3. The encoded string is divided into 4-character segments (total of 22).
-4. Each segment is scored using a custom entropy function.
-5. Segments with the highest scores are selected based on the desired output length.
-6. The first and last segments are always included for stability and determinism.
-7. If character class diversity is insufficient, selected characters are replaced in a controlled way to guarantee at least one character of each type (lowercase, uppercase, digit, special).
-8. Final output is written to an output field.
+### Outputs
+- **Final Password:** A high-entropy, deterministic password that meets the specified length and character complexity requirements.
+
+### Dependencies
+- **CryptoJS:** Employed for HMAC-SHA512 hashing and Base64 encoding.
+- **Standard HTML/CSS/JavaScript:** Provides the user interface, including event handling, modal dialogs for configuration, inline error messages, and copy-to-clipboard functionality.
 
 ---
 
-## **Entropy Scoring Algorithm**
+## Process Flow
 
-Each 4-character segment is scored as follows:
+1. **HMAC Computation:**  
+   Compute an HMAC using SHA-512 over the provided Password Base with the Secret Key.
 
-1. **Character Type Classification:**
-   - `a-z`: Type 1
-   - `A-Z`: Type 2
-   - `0-9`: Type 3
-   - `[^a-zA-Z0-9]`: Type 4 (special chars)
+2. **Base64 Encoding:**  
+   Encode the resulting hash into an 88-character Base64 string.
 
-2. **Entropy Score =**  
-   - `10 × Number of Unique Character Types in Segment`
-   - Plus: For each type `t` present, add  
-     `(Number of characters of type t) × (10 / overall frequency of type t in the full base64 string)`
+3. **Segmentation:**  
+   Divide the Base64 string into 22 fixed-length segments (each 4 characters long).
 
-This approach favors segments that contain multiple character types *and* contain rarer types more frequently.
+4. **Entropy Scoring:**  
+   Score each 4-character segment based on:
+   - The diversity of character types it contains (lowercase, uppercase, digit, and special).
+   - The relative frequency (rarity) of these character types in the entire Base64 string.
 
----
+5. **Segment Selection:**  
+   Determine the number of segments needed by dividing the desired output length by 4.  
+   - Always include the first and last segments.
+   - Select the remaining segments in order of descending entropy score.
 
-## **Truncation Selection Logic**
+6. **Character Diversity Enforcement:**  
+   Validate the truncated output to ensure it contains at least one character from each of the four character classes.  
+   - If any category is missing, replace a character from an overrepresented type with a predetermined substitute (`'a'` for lowercase, `'A'` for uppercase, `'1'` for digits, `'/'` for special characters).
 
-Given a required output length (e.g., 24 chars), the number of segments needed is calculated as `length / 4`.
-
-- The **first segment** is always included.
-- The **last segment** is always included.
-- The remaining segments are selected by descending entropy score.
-
-Example: For 24-character output, select 6 segments = 1 (start) + 1 (end) + top 4 entropy segments.
-
----
-
-## **Character Diversity Enforcement**
-
-After truncation, the output is validated for diversity:
-
-- If any of the 4 character classes is missing, the most common class in the output is identified.
-- A character from the overrepresented class is replaced with a character from the missing class.
-- Replacement characters are standard and predictable: `'a'`, `'A'`, `'1'`, `'/'`.
-
-This ensures every password contains at least:
-- One lowercase letter
-- One uppercase letter
-- One digit
-- One special character
+7. **Output Generation:**  
+   Concatenate the selected segments (and trim if necessary) to produce the final password.
 
 ---
 
-## **Example Execution**
+## Entropy Scoring Algorithm
 
-### Inputs:
-- Password Base: `user@example.com`
-- Secret Key: `hunter2`
-- Truncation Enabled: Yes
-- Desired Length: 24
+For each 4-character segment:
 
-### Result:
-- HMAC-SHA512 (Base64): `zdMZ...`
-- Segmented into 22 × 4-character groups
-- Entropy scores calculated per segment
-- Selected segments: `[0, 3, 5, 7, 10, 21]`
-- Post-processing ensures full character diversity
-- Final Output: `zdMZ8pQzZ/tAqLvE1XHa5N/3`
+1. **Character Classification:**
+   - **Type 1:** Lowercase (`a-z`)
+   - **Type 2:** Uppercase (`A-Z`)
+   - **Type 3:** Digit (`0-9`)
+   - **Type 4:** Special Character (`[^a-zA-Z0-9]`)
 
----
+2. **Scoring:**
+   - **Base Score:**  
+     `10 × (Number of Unique Character Types)`
+   - **Additional Score:**  
+     For each character type `t` present in the segment, add:  
+     `(Number of characters of type t in the segment) × (10 / Overall count of type t in the full Base64 string)`
 
-## **User Interface (UI) Design Notes**
-
-- UI includes modal dialog for truncation length selection with visual feedback.
-- Input validation is handled inline with DOM-based error messages.
-- Copy-to-clipboard function is triggered via `execCommand`.
+3. **Final Entropy Score:**  
+   The sum of the base and additional scores, favoring segments with diverse and less-frequent character types.
 
 ---
 
-## **Legal Notes**
+## Truncation Selection Logic
 
-This document serves as a **defensive publication**, establishing **prior art** on the following:
-- Entropy-scored truncation of a deterministic hash
-- Segment selection based on statistical analysis
-- Forced diversity modification in Base64-derived passwords
-- Modal-driven length control for password generators
+Given a target output length `L` (where `L` is a multiple of 4):
 
-This functionality is released under the MIT License, and is intended to **prevent any future software patents** from being granted on these ideas or their derivatives.
+- **Number of Segments Needed:**  
+  \[
+  \text{Segments Required} = \frac{L}{4}
+  \]
+
+- **Fixed Inclusions:**
+  - The **first segment** is always included.
+  - The **last segment** is always included.
+
+- **Selection Process:**
+  - Among the remaining segments, select those with the highest entropy scores until the total number of segments equals \(\frac{L}{4}\).
+
+**Example:**  
+For a target length of 24 characters, 6 segments are required:
+- 1st segment: Included by default  
+- Last segment: Included by default  
+- Select the top 4 scoring segments from the intermediate segments.
 
 ---
 
-## **Conclusion**
+## Character Diversity Enforcement
 
-The techniques described above are original, useful, and novel within the scope of password generation and secure deterministic hashing. This disclosure is made to protect open use of the approach in the software community, and to prevent future misuse of patent systems to restrict access to these methods.
+After forming the truncated output:
+
+1. **Validation:**  
+   Check the presence of all four character categories:
+   - Lowercase, Uppercase, Digit, and Special Character.
+
+2. **Substitution Strategy:**  
+   If one or more types are absent:
+   - Identify the most frequent character type in the output.
+   - Replace an occurrence of this overrepresented type with a predetermined character representing the missing type:
+     - `'a'` for missing lowercase
+     - `'A'` for missing uppercase
+     - `'1'` for missing digit
+     - `'/'` for missing special characters
+
+This guarantees compliance with standard password complexity rules.
+
+---
+
+## Example Execution
+
+**Inputs:**  
+- Password Base: `user@example.com`  
+- Secret Key: `hunter2`  
+- Truncation Enabled: Yes  
+- Desired Output Length: 24 characters
+
+**Execution Steps:**
+1. **HMAC-SHA512 Computation:**  
+   Calculate the HMAC for `user@example.com` using `hunter2`.
+
+2. **Base64 Encoding:**  
+   Obtain an 88-character Base64 string from the HMAC.
+
+3. **Segmentation and Scoring:**  
+   Divide the string into 22 segments; compute entropy scores for each segment.
+
+4. **Segment Selection:**  
+   For a 24-character output, choose 6 segments: include the first and last segments plus the 4 with highest entropy among the remaining.
+
+5. **Diversity Enforcement:**  
+   Validate and, if necessary, adjust the output to ensure all four character types are present.
+
+6. **Final Output:**  
+   The deterministic password might be:  
+   `zdMZ8pQzZ/tAqLvE1XHa5N/3`  
+   *(This is an illustrative example.)*
+
+---
+
+## User Interface (UI) Design Notes
+
+- **Input Validation:**  
+  Inline error messages prompt the user if the Password Base or Secret Key is missing.
+- **Modal Dialogs:**  
+  A modal interface allows selection of the desired truncation length with visual feedback.
+- **Copy Functionality:**  
+  A copy-to-clipboard function, implemented via `document.execCommand`, facilitates easy transfer of the final password.
+
+---
+
+## Legal and Defensive Publication Notes
+
+This document is issued as a **defensive publication** to establish prior art for the following innovative elements:
+- **Entropy-Scored Truncation:**  
+  The method of dividing a Base64-encoded HMAC output into segments, evaluating their entropy, and selectively truncating the output.
+- **Diversity Enforcement Mechanism:**  
+  The controlled substitution ensuring that the final password contains at least one lowercase letter, one uppercase letter, one digit, and one special character.
+- **Deterministic Password Generation:**  
+  The overall approach that yields reproducible, high-entropy passwords from the same set of inputs.
+
+The disclosed technique is released under the MIT License, making it freely available to the software community and precluding the issuance of any future patents on these methods.
+
+---
+
+## Conclusion
+
+This disclosure documents a novel approach to deterministic password generation, integrating HMAC-SHA512 and Base64 encoding with a unique entropy-based truncation method and character diversity enforcement. By establishing this method as prior art, the publication safeguards the open use of these techniques within the software development community and deters future patent claims on similar methods.
