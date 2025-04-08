@@ -1,6 +1,6 @@
 # **Entropy-Based Truncation and Diversity-Ensured Password Generation Using HMAC-SHA512 and Base64 Encoding**
 
-### Author: [Your Name or Alias]  
+### Author: EclipsedNoir  
 **Date of Original Publication:** April 8th, 2025  
 **Repository:** https://github.com/eclipsednoir/HMAC-SHA512-Password-Generator
 **License:** MIT  
