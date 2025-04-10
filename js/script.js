@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const howItWorksLink = document.getElementById("howItWorksLink");
   const instructionsModal = document.getElementById("instructionsModal");
   const closeInstructionsModalBtn = instructionsModal.querySelector(".close");
-  let selectedTruncateLength = 24; // Default truncate length
+  let selectedTruncateLength = 24;
 
   const mainInputError = document.createElement("div");
   mainInputError.className = "error-message";
