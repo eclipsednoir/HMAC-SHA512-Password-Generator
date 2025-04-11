@@ -190,7 +190,8 @@ copyBtn.addEventListener("click", function () {
     });
   } else {
     fallbackCopy(text);
-  }
+  };
+  alert("Password copied. Remember: your clipboard is not secure. Clear it after use to prevent leakage.");
 });
 
 function fallbackCopy(text) {
