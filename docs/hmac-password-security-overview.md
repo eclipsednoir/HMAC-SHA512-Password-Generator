@@ -93,23 +93,53 @@ Additionally:
 
 ---
 
-## Using HMAC-SHA512 to Derive the Secret Key: Hardened Chain
+## Using HMAC-SHA512 to Derive the Secret Key: Pre-Hardened Secret
 
-A user can increase security exponentially by deriving the secret key itself using HMAC:
+A user can significantly increase security by **deriving the Secret Key** itself using HMAC-SHA512. Instead of typing a static secret key directly, the user first generates it by combining two separate inputs via HMAC.
 
-Example:
+### Example:
 
-1. `key1 = HMAC("gmail", "MyMasterKey")`
-2. `key2 = HMAC("github", "MyMasterKey")`
-3. Final password = `HMAC("ServiceName", key1 + key2)`
+Let:
+- `Input 1 = something memorable or user-specific`
+- `Input 2 = something secret (e.g., passphrase or PIN)`
 
-This:
-- Forces attackers to guess *multiple* secrets correctly
-- Makes precomputation and dictionary attacks useless
-- Increases effective key size to 1024 bits (from two chained 512-bit HMACs)
-- Makes even weak human inputs cryptographically safe through expansion
+Then:
 
-This creates a cascade of deterministic, unguessable, unlinkable keys.
+```
+Secret Key = HMAC_SHA512(Input 1, Input 2)
+Final Password = HMAC_SHA512("ServiceName", Secret Key)
+```
+
+This approach increases the effective complexity of the secret input, while still allowing the final password to be generated deterministically.
+
+### Benefits:
+
+- **Massively expands the input space**:  
+  The attacker must correctly guess both `Input 1` and `Input 2` to even reach the Secret Key.
+
+- **Full 512-bit key material**:  
+  The derived key is 512 bits in size, encoded as an 88-character Base64 string — cryptographically strong by default.
+
+- **No clues from partial guesses**:  
+  Incorrect input combinations yield completely unrelated outputs, with no indication of proximity to the correct answer.
+
+- **Works seamlessly with the generator**:  
+  The user pastes the derived Secret Key into the tool as usual. No changes to the generator are required.
+
+- **Ideal for memory-based workflows**:  
+  Users can remember two simpler inputs rather than a long key, while still benefiting from strong derived entropy.
+
+---
+
+### Summary
+
+This method turns the Secret Key into a **derived cryptographic value**, making brute-force attacks even less viable. It requires the attacker to guess both independent inputs correctly, and offers extremely high entropy without needing to store anything.
+
+> **Final formula becomes:**
+>
+> `Password = HMAC_SHA512(ServiceName, HMAC_SHA512(Input 1, Input 2))`
+
+This small change dramatically increases security while preserving the generator’s portability, determinism, and offline operation.
 
 ---
 
