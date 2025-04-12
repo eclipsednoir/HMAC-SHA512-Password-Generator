@@ -58,7 +58,7 @@ If all 22 characters use the full Base64 character set (64 symbols), total combi
 64^22 = 2^132 ≈ 5.44 × 10^39
 ```
 
-This represents over 131 bits of entropy.
+This represents up to 132 bits of entropy.
 
 Even with 1 million GPUs running at 1 billion guesses per second (10^15 guesses/sec), it would take:
 
