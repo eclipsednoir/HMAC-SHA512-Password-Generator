@@ -34,7 +34,7 @@ By using HMAC, the system protects even against an attacker who might know part 
 
 ## Base64 Encoding and Truncation
 
-The full HMAC-SHA512 output (512 bits) is Base64-encoded into an 88-character string. The generator truncates this string to a smaller length (commonly 16–32 characters) while maintaining:
+The full HMAC-SHA512 output (512 bits) is Base64-encoded into an 88-character string. The generator truncates this string to a smaller length (commonly 24 characters) while maintaining:
 
 - **Determinism**
 - **High entropy**
