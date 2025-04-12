@@ -55,7 +55,7 @@ Example: 24-character output (22 real characters + 2 padding)
 If all 22 characters use the full Base64 character set (64 symbols), total combinations are:
 
 ```
-64^22 ≈ 5.44 × 10^39 ≈ 2^131.6
+64^22 = 2^132 ≈ 5.44 × 10^39
 ```
 
 This represents over 131 bits of entropy.
