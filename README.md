@@ -40,6 +40,11 @@ The same input combo will always generate the same password — so you never nee
 - No storage, no telemetry, no cloud
 - CryptoJS (HMAC-SHA512, Base64) is bundled in the file
 
+## Documentation Index
+
+- [Security Overview](https://github.com/eclipsednoir/HMAC-SHA512-Password-Generator/blob/main/docs/hmac-password-security-overview.md)
+- [Entropy Truncation Method](https://github.com/eclipsednoir/HMAC-SHA512-Password-Generator/blob/main/docs/hmac-password-entropy-method.md)
+
 ## License
 
 This project is licensed under the MIT License.  
